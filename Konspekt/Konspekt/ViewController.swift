@@ -126,8 +126,8 @@ class ViewController: UIViewController, UITextFieldDelegate {
     
     func createLoginButton() {
         buttonSignUp = UIButton(type: .roundedRect)
-        buttonSignUp.backgroundColor = UIColor.gray
-        buttonSignUp.tintColor = UIColor.red
+        buttonSignUp.backgroundColor = UIColor.blue
+        buttonSignUp.tintColor = UIColor.white
         buttonSignUp.setTitle("Sign up", for: .normal)
         buttonSignUp.addTarget(self, action: #selector (loginButtonIsPressed), for: .touchDown)
         buttonSignUp.addTarget(self, action: #selector(loginButtonIsTapped), for: .touchUpInside)
@@ -139,8 +139,8 @@ class ViewController: UIViewController, UITextFieldDelegate {
         
     func createButtonRegistration() {
         buttonRegistration = UIButton(type: .roundedRect)
-        buttonRegistration.backgroundColor = UIColor.gray
-        buttonRegistration.tintColor = UIColor.red
+        buttonRegistration.backgroundColor = UIColor.blue
+        buttonRegistration.tintColor = UIColor.white
         buttonRegistration.setTitle("Registration", for: .normal)
         buttonRegistration.addTarget(self, action: #selector (registrationButtonIsPressed), for: .touchDown)
         buttonRegistration.addTarget(self, action: #selector(registrationButtonIsTapped), for: .touchUpInside)
@@ -187,6 +187,22 @@ class ViewController: UIViewController, UITextFieldDelegate {
     }
     
     @objc func loginButtonIsTapped(sender: UIButton) {
+        let defaults = UserDefaults.standard
+        
+        let savedEmail = defaults.string(forKey: "userEmail")
+        let savedPassword = defaults.string(forKey: "userPassword")
+        
+        guard let inputEmail = loginTextField.text, !inputEmail.isEmpty,
+              let inputPassword = passwordTextField.text, !inputPassword.isEmpty else {
+            showAlert(massega: "введите ваш email и пароль")
+            return
+        }
+        
+        if inputEmail == savedEmail && inputPassword == savedPassword {
+            navigationController?.pushViewController(ViewControllerSignUp(), animated: true)
+        } else {
+            showAlert(massega: "вы ввели неверный пароль или email")
+        }
         if validateLoginFields() {
         navigationController?.pushViewController(signUpController, animated: true)
     }
@@ -266,4 +282,5 @@ class ViewController: UIViewController, UITextFieldDelegate {
         let eyeIcon = passwordTextField.isSecureTextEntry ? "eye.slash.fill" : "eye.slash"
         togglePasswordButton.setImage(UIImage(systemName: eyeIcon), for: .normal)
     }
+    
 }

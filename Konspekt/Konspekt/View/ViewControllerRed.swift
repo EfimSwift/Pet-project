@@ -16,9 +16,12 @@ class ViewControllerRegistration: UIViewController,UITextFieldDelegate {
     var genderArray = ["Man", "Wooman"]
     var agePicker = UIDatePicker()
     var enterAgeLabel = UILabel()
+    var createPassword = UITextField()
+    var confirmRegistrationButton = UIButton()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        saveUserData()
         
         
         view.backgroundColor = .white
@@ -29,16 +32,46 @@ class ViewControllerRegistration: UIViewController,UITextFieldDelegate {
         createGender()
         createAgeLabel()
         createAgePicker()
+        createTextFieldPassword()
+        createconfirmRegistrationButton()
         activeConstraints()
+        
         
         nameTextField.delegate = self
         lastNameTextField.delegate = self
         emailTextField.delegate = self
+        createPassword.delegate = self
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         view.addGestureRecognizer(tapGesture)
         
     }
+    //MARK: create confirmRegistrationButton
+    
+    func createconfirmRegistrationButton() {
+        confirmRegistrationButton = UIButton(type: .roundedRect)
+        confirmRegistrationButton.backgroundColor = UIColor.blue
+        confirmRegistrationButton.tintColor = UIColor.white
+        confirmRegistrationButton.setTitle("Confirm", for: .normal)
+        confirmRegistrationButton.addTarget(self, action: #selector (confirmButtonIsPressed), for: .touchDown)
+        confirmRegistrationButton.addTarget(self, action: #selector(confirmButtonIsTapped), for: .touchUpInside)
+        confirmRegistrationButton.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(confirmRegistrationButton)
+    }
+    
+    //MARK: Create Password
+    
+    func createTextFieldPassword() {
+        createPassword.borderStyle = .roundedRect
+        createPassword.textAlignment = .center
+        createPassword.placeholder = "Create your password"
+        createPassword.translatesAutoresizingMaskIntoConstraints = false
+        createPassword.delegate = self
+        view.addSubview(createPassword)
+        createPassword.isSecureTextEntry = true
+        createPassword.addTarget(self, action: #selector(createPasswordTextField), for: .editingChanged)
+    }
+    
     //MARK: Create nameTextField
     
     func createNameTextField() {
@@ -112,6 +145,8 @@ class ViewControllerRegistration: UIViewController,UITextFieldDelegate {
     
     //MARK: Constraints
     func activeConstraints() {
+        
+        
         NSLayoutConstraint.activate([
             nameTextField.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             nameTextField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 60),
@@ -139,8 +174,18 @@ class ViewControllerRegistration: UIViewController,UITextFieldDelegate {
             agePicker.leadingAnchor.constraint(equalTo: enterAgeLabel.trailingAnchor, constant: 10),
             agePicker.centerYAnchor.constraint(equalTo: enterAgeLabel.centerYAnchor),
             agePicker.widthAnchor.constraint(equalTo: emailTextField.widthAnchor, multiplier: 0.6),
-            agePicker.heightAnchor.constraint(equalToConstant: 50)
-            ])
+            agePicker.heightAnchor.constraint(equalToConstant: 50),
+            //MARK: createPassword constraints
+            createPassword.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            createPassword.topAnchor.constraint(equalTo: agePicker.bottomAnchor, constant: 20),
+            createPassword.widthAnchor.constraint(equalTo: emailTextField.widthAnchor),
+            createPassword.heightAnchor.constraint(equalTo: emailTextField.heightAnchor),
+            //MARK: confirmRegistration constraints
+            confirmRegistrationButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            confirmRegistrationButton.topAnchor.constraint(equalTo: createPassword.bottomAnchor, constant: 80),
+            confirmRegistrationButton.widthAnchor.constraint(equalTo: createPassword.widthAnchor),
+            confirmRegistrationButton.heightAnchor.constraint(equalTo: createPassword.heightAnchor)
+        ])
     }
     
     
@@ -196,11 +241,103 @@ class ViewControllerRegistration: UIViewController,UITextFieldDelegate {
         view.endEditing(true)
     }
     
+    //MARK: Selectoк createPasswordTextField
+    
+    @objc func createPasswordTextField() {
+        if createPassword.text?.isEmpty == true {
+            createPassword.layer.borderColor = UIColor.systemRed.cgColor
+        } else {
+            createPassword.layer.borderColor = UIColor.systemGreen.cgColor
+        }
+        
+    }
+    
+    //MARK: selector confirmRegistrationButton
+    @objc func confirmButtonIsPressed(sender: UIButton) {
+        print("Confirm button pressed")
+        
+    }
+    
+    //MARK: selector confirmRegistrationButton
+    
+    @objc func confirmButtonIsTapped(sender: UIButton) {
+        saveUserData()
+        if !validateFields() {
+            return
+        }
+        navigationController?.popToRootViewController(animated: true)
+    }
+    
+    
+    
+    
     //MARK: Method
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
     }
+    //MARK: ограничение ввода только английскими буквами
     
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        let allowedCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@._-"
+        let characterSet = CharacterSet(charactersIn: allowedCharacters)
+        return string.rangeOfCharacter(from: characterSet) != nil || string.isEmpty
+    }
+    
+    //MARK: проверка на заполненые поля
+    func validateFields() -> Bool {
+        if nameTextField.text?.isEmpty == true ||
+            lastNameTextField.text?.isEmpty == true ||
+            emailTextField.text?.isEmpty == true ||
+            createPassword.text?.isEmpty == true {
+            
+            showAlert(message: "Заполните все поля!")
+            return false
+        }
+        
+        // Проверяем, выбрана ли дата рождения
+        let calendar = Calendar.current
+        let today = Date()
+        let components = calendar.dateComponents([.year], from: agePicker.date, to: today)
+        if components.year ?? 0 < 1 {
+            showAlert(message: "Выберите корректную дату рождения!")
+            return false
+        }
+
+        // Проверяем, выбран ли пол
+        if genderSegmentControl.selectedSegmentIndex == UISegmentedControl.noSegment {
+            showAlert(message: "Выберите пол!")
+            return false
+        }
+        
+        return true
+    }
+
+    // MARK: - Метод для показа Alert
+    func showAlert(message: String) {
+        let alert = UIAlertController(title: "Ошибка", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "ОК", style: .default))
+        present(alert, animated: true, completion: nil)
+    }
+    
+    //MARK: adding UserDefaults
+    
+    func saveUserData() {
+        let defaults = UserDefaults.standard
+        defaults.set(nameTextField.text, forKey: "userName") // Сохраняем текст
+        defaults.set(lastNameTextField.text, forKey: "userLastName")
+        defaults.set(emailTextField.text, forKey: "userEmail")
+        defaults.set(createPassword.text, forKey: "userPassword")
+
+        if genderSegmentControl.selectedSegmentIndex >= 0 {
+            let selectedGender = genderArray[genderSegmentControl.selectedSegmentIndex]
+            defaults.set(selectedGender, forKey: "userGender")
+        }
+
+        let birthDate = agePicker.date.timeIntervalSince1970
+        defaults.set(birthDate, forKey: "userBirthDate")
+
+        defaults.synchronize() // Синхронизируем данные (необязательно в новых версиях Swift)
+    }
 }
