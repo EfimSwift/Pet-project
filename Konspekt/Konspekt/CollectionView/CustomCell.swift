@@ -15,30 +15,25 @@ class CustomCell: UICollectionViewCell {
         label.numberOfLines = 4
         label.lineBreakMode = .byTruncatingTail
         label.adjustsFontSizeToFitWidth = true
-//        label.minimumScaleFactor = 0.2
+        //        label.minimumScaleFactor = 0.2
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
-    }()
-    
+    }()    
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = .systemBlue
         layer.cornerRadius = 10
-        
         addSubview(label)
-        
-    NSLayoutConstraint.activate([
-    label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 5),
-    label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -5),
-    label.topAnchor.constraint(equalTo: topAnchor, constant: 5),
-    label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -5)
+        NSLayoutConstraint.activate([
+            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 5),
+            label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -5),
+            label.topAnchor.constraint(equalTo: topAnchor, constant: 5),
+            label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -5)
         ])
     }
-    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
     func configureCell(title: String) {
         label.text = title
     }

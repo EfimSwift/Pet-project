@@ -22,10 +22,7 @@ class ViewControllerRegistration: UIViewController,UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         saveUserData()
-        
-        
         view.backgroundColor = .white
-        
         createNameTextField()
         createLastNameTextField()
         createEmailTextField()
@@ -35,8 +32,6 @@ class ViewControllerRegistration: UIViewController,UITextFieldDelegate {
         createTextFieldPassword()
         createconfirmRegistrationButton()
         activeConstraints()
-        
-        
         nameTextField.delegate = self
         lastNameTextField.delegate = self
         emailTextField.delegate = self
@@ -47,7 +42,6 @@ class ViewControllerRegistration: UIViewController,UITextFieldDelegate {
         
     }
     //MARK: create confirmRegistrationButton
-    
     func createconfirmRegistrationButton() {
         confirmRegistrationButton = UIButton(type: .roundedRect)
         confirmRegistrationButton.backgroundColor = UIColor.blue
@@ -58,9 +52,7 @@ class ViewControllerRegistration: UIViewController,UITextFieldDelegate {
         confirmRegistrationButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(confirmRegistrationButton)
     }
-    
     //MARK: Create Password
-    
     func createTextFieldPassword() {
         createPassword.borderStyle = .roundedRect
         createPassword.textAlignment = .center
@@ -71,9 +63,7 @@ class ViewControllerRegistration: UIViewController,UITextFieldDelegate {
         createPassword.isSecureTextEntry = true
         createPassword.addTarget(self, action: #selector(createPasswordTextField), for: .editingChanged)
     }
-    
     //MARK: Create nameTextField
-    
     func createNameTextField() {
         nameTextField.borderStyle = .roundedRect
         nameTextField.textAlignment = .center
@@ -83,9 +73,7 @@ class ViewControllerRegistration: UIViewController,UITextFieldDelegate {
         view.addSubview(nameTextField)
         nameTextField.addTarget(self, action: #selector(validateLoginField), for: .editingChanged)
     }
-    
     //MARK: Create lastNameTextField
-    
     func createLastNameTextField() {
         lastNameTextField.borderStyle = .roundedRect
         lastNameTextField.textAlignment = .center
@@ -95,9 +83,7 @@ class ViewControllerRegistration: UIViewController,UITextFieldDelegate {
         view.addSubview(lastNameTextField)
         lastNameTextField.addTarget(self, action: #selector(validateLastNameField), for: .editingChanged)
     }
-    
     //MARK: Create emailTextField
-    
     func createEmailTextField() {
         emailTextField.borderStyle = .roundedRect
         emailTextField.textAlignment = .center
@@ -115,7 +101,6 @@ class ViewControllerRegistration: UIViewController,UITextFieldDelegate {
         genderSegmentControl.addTarget(self, action: #selector(genderSelected), for: .valueChanged)
     }
     //MARK: Create agePicker
-    
     func createAgePicker() {
         agePicker.datePickerMode = .date
         agePicker.translatesAutoresizingMaskIntoConstraints = false
@@ -130,10 +115,8 @@ class ViewControllerRegistration: UIViewController,UITextFieldDelegate {
         agePicker.maximumDate = todayDate
         view.addSubview(agePicker)
         agePicker.addTarget(self, action: #selector(dataPickerChangeValue), for: .valueChanged)
-        
     }
     //MARK: Create ageLabel
-    
     func createAgeLabel() {
         enterAgeLabel = UILabel()
         enterAgeLabel.numberOfLines = 1
@@ -142,11 +125,8 @@ class ViewControllerRegistration: UIViewController,UITextFieldDelegate {
         enterAgeLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(enterAgeLabel)
     }
-    
     //MARK: Constraints
     func activeConstraints() {
-        
-        
         NSLayoutConstraint.activate([
             nameTextField.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             nameTextField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 60),
@@ -187,10 +167,6 @@ class ViewControllerRegistration: UIViewController,UITextFieldDelegate {
             confirmRegistrationButton.heightAnchor.constraint(equalTo: createPassword.heightAnchor)
         ])
     }
-    
-    
-    
-    
     //MARK: Selector nameTextField
     @objc func validateLoginField() {
         if nameTextField.text?.isEmpty == true {
@@ -199,9 +175,7 @@ class ViewControllerRegistration: UIViewController,UITextFieldDelegate {
             nameTextField.layer.borderColor = UIColor.systemGreen.cgColor
         }
     }
-    
     //MARK: selector lastNameTextField
-    
     @objc func validateLastNameField() {
         if lastNameTextField.text?.isEmpty == true {
             lastNameTextField.layer.borderColor = UIColor.systemRed.cgColor
@@ -209,9 +183,7 @@ class ViewControllerRegistration: UIViewController,UITextFieldDelegate {
             lastNameTextField.layer.borderColor = UIColor.systemGreen.cgColor
         }
     }
-    
     //MARK: selector mailTextField
-    
     @objc func validateMailField() {
         if emailTextField.text?.isEmpty == true {
             emailTextField.layer.borderColor = UIColor.systemRed.cgColor
@@ -223,43 +195,32 @@ class ViewControllerRegistration: UIViewController,UITextFieldDelegate {
     @objc func genderSelected(target: UISegmentedControl) {
         if target == genderSegmentControl {
             let sigmentIndex = target.selectedSegmentIndex
-            
             _ = target.titleForSegment(at: sigmentIndex)
-            
         }
     }
     //MARK: Selector ageDataPicker
-    
     @objc func dataPickerChangeValue(param: UIDatePicker) {
         if param.isEqual(agePicker) {
             print("dataChange : = \(param.date)")
         }
     }
-    
     //MARK: Selector tapGestureRecognizer
     @objc func dismissKeyboard() {
         view.endEditing(true)
     }
-    
     //MARK: Selectoк createPasswordTextField
-    
     @objc func createPasswordTextField() {
         if createPassword.text?.isEmpty == true {
             createPassword.layer.borderColor = UIColor.systemRed.cgColor
         } else {
             createPassword.layer.borderColor = UIColor.systemGreen.cgColor
         }
-        
     }
-    
     //MARK: selector confirmRegistrationButton
     @objc func confirmButtonIsPressed(sender: UIButton) {
         print("Confirm button pressed")
-        
     }
-    
     //MARK: selector confirmRegistrationButton
-    
     @objc func confirmButtonIsTapped(sender: UIButton) {
         saveUserData()
         if !validateFields() {
@@ -267,31 +228,23 @@ class ViewControllerRegistration: UIViewController,UITextFieldDelegate {
         }
         navigationController?.popToRootViewController(animated: true)
     }
-    
-    
-    
-    
     //MARK: Method
-    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
     }
     //MARK: ограничение ввода только английскими буквами
-    
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         let allowedCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@._-"
         let characterSet = CharacterSet(charactersIn: allowedCharacters)
         return string.rangeOfCharacter(from: characterSet) != nil || string.isEmpty
     }
-    
     //MARK: проверка на заполненые поля
     func validateFields() -> Bool {
         if nameTextField.text?.isEmpty == true ||
             lastNameTextField.text?.isEmpty == true ||
             emailTextField.text?.isEmpty == true ||
             createPassword.text?.isEmpty == true {
-            
             showAlert(message: "Заполните все поля!")
             return false
         }
@@ -304,40 +257,34 @@ class ViewControllerRegistration: UIViewController,UITextFieldDelegate {
             showAlert(message: "Выберите корректную дату рождения!")
             return false
         }
-
         // Проверяем, выбран ли пол
         if genderSegmentControl.selectedSegmentIndex == UISegmentedControl.noSegment {
             showAlert(message: "Выберите пол!")
             return false
         }
-        
         return true
     }
-
     // MARK: - Метод для показа Alert
     func showAlert(message: String) {
         let alert = UIAlertController(title: "Ошибка", message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "ОК", style: .default))
         present(alert, animated: true, completion: nil)
     }
-    
     //MARK: adding UserDefaults
-    
     func saveUserData() {
         let defaults = UserDefaults.standard
         defaults.set(nameTextField.text, forKey: "userName") // Сохраняем текст
         defaults.set(lastNameTextField.text, forKey: "userLastName")
         defaults.set(emailTextField.text, forKey: "userEmail")
         defaults.set(createPassword.text, forKey: "userPassword")
-
+        
         if genderSegmentControl.selectedSegmentIndex >= 0 {
             let selectedGender = genderArray[genderSegmentControl.selectedSegmentIndex]
             defaults.set(selectedGender, forKey: "userGender")
         }
-
+        
         let birthDate = agePicker.date.timeIntervalSince1970
         defaults.set(birthDate, forKey: "userBirthDate")
-
         defaults.synchronize() // Синхронизируем данные (необязательно в новых версиях Swift)
     }
 }
